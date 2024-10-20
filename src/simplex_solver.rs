@@ -1,6 +1,6 @@
 use crate::lp_problem::LpProblem;
 use ::approx::AbsDiffEq;
-use ::ndarray::{array, concatenate, s, Array1, Array2, ArrayBase, Axis, OwnedRepr};
+use ::ndarray::{array, concatenate, s, Array1, Array2, Axis};
 
 #[derive(std::fmt::Debug, PartialEq)]
 struct SimplexTableau {
