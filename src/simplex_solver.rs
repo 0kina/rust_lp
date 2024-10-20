@@ -10,6 +10,7 @@ struct SimplexTableau {
 }
 
 impl SimplexTableau {
+    const EPS: f64 = 1e-7;
     /// ダミーのタブローを作成する．
     /// このタブローに対して各メソッドを呼んだ場合の動作は未定義とする．
     fn dummy() -> Self {
@@ -90,7 +91,7 @@ impl SimplexTableau {
     /// 巡回を避けるため，最小添字規則を用いる．
     fn find_pivot_column(&self) -> Option<usize> {
         for i in 0..self.objective_row.len() - 1 {
-            if self.objective_row[i] > 0. {
+            if self.objective_row[i] > Self::EPS {
                 return Some(i);
             }
         }
@@ -107,7 +108,7 @@ impl SimplexTableau {
         let n = self.augmented_coeffs.shape()[1] - 1;
         for i in 0..m {
             let coeff = self.augmented_coeffs[[i, pivot_column]];
-            if coeff <= 0. {
+            if coeff <= Self::EPS {
                 continue;
             }
             let candidate_diff = self.augmented_coeffs[[i, n]] / coeff;
@@ -257,7 +258,7 @@ impl SimplexSolver {
         let first_status = first_tableau.solve();
         match first_status {
             SolverStatus::Optimal => {
-                if first_tableau.get_score() != 0. {
+                if first_tableau.get_score() < -SimplexTableau::EPS {
                     self.status = SolverStatus::Infeasible;
                     return SolverStatus::Infeasible;
                 }
